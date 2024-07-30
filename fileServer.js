@@ -6,6 +6,12 @@ var fs = require('fs'),
 var root = path.resolve(process.argv[2] || '.');
 
 var server = http.createServer(function (request, response) {
+    if (path.normalize(decodeURI(request.url)) !== decodeURI(request.url)) {
+        response.statusCode = 403;
+        response.end();
+        return;
+    }
+    
     var pathname = url.parse(request.url).pathname;
     var filepath = path.join(root, pathname);
     fs.stat(filepath, function (err, stats) {
